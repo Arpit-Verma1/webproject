@@ -1,113 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Handsontable with Formula Support</title>
-  <!-- Handsontable CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
-  <style>
-    /* Additional styling to ensure text visibility */
-    #spreadsheet .htCore td {
-        color: black; /* Set text color */
-        background-color: white; /* Set background color */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutter + Handsontable</title>
 
-    /* Optional styling */
-    body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-    }
+    <!-- Flutter settings -->
+    <base href="/">
 
-    #spreadsheet {
-        margin-top: 20px;
-        border: 1px solid #ccc;
-    }
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A new Flutter project.">
 
-    #textInput {
-        margin-bottom: 10px;
-    }
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Your Flutter App Name">
+    <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-    button {
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-  </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png"/>
+
+    <!-- Handsontable CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+
+    <style>
+        /* Additional styling to ensure text visibility */
+        #spreadsheet .htCore td {
+          color: black; /* Set text color */
+          background-color: white; /* Set background color */
+        }
+
+        /* Optional styling */
+        body {
+          font-family: Arial, sans-serif;
+          padding: 20px;
+        }
+
+        #spreadsheet {
+          margin-top: 20px;
+          border: 1px solid #ccc;
+        }
+
+        #textInput {
+          margin-bottom: 10px;
+        }
+
+        button {
+          padding: 10px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
+<!-- This container will be used by the Flutter web engine -->
+<div id="flutter_container"></div>
+
 <h1>Handsontable Text and Formula Example</h1>
 
-<input type="text" id="textInput" placeholder="Enter text" />
+<input type="text" id="textInput" placeholder="Enter text"/>
 <button onclick="submitText()">Submit Text</button>
 
 <div id="spreadsheet"></div>
 
-<!-- HyperFormula Library (for formulas support) -->
-<script src="https://cdn.jsdelivr.net/npm/hyperformula@1.0.0/dist/hyperformula.full.min.js"></script>
+<!-- Flutter bootstrap script -->
+<script src="flutter.js" defer></script>
 
-<!-- Handsontable JS -->
+<!-- Handsontable and HyperFormula Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/hyperformula@1.0.0/dist/hyperformula.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 
 <script>
-  // Global Handsontable instance
-  var hot;
+    // Global Handsontable instance
+    var hot;
 
-  // Function to initialize Handsontable
-  function initializeHandsontable(data = [['', '', '', '', '']]) {
+    // Function to initialize Handsontable
+    function initializeHandsontable(data = [['', '', '', '', '']]) {
       var container = document.getElementById('spreadsheet');
 
       // If Handsontable already exists, destroy the old instance
       if (hot) {
-          hot.destroy();
+        hot.destroy();
       }
 
       // Initialize Handsontable with HyperFormula engine for formula support
       hot = new Handsontable(container, {
-          licenseKey: 'non-commercial-and-evaluation', // Add the license key here
-          data: data, // Load the data passed
-          colHeaders: true, // Show column headers
-          rowHeaders: true, // Show row headers
-          filters: true, // Enable filters
-          dropdownMenu: true, // Enable dropdown menu
-          width: '100%',
-          height: 'auto',
-          stretchH: 'all',
-          formulas: {
-              engine: HyperFormula // Use HyperFormula engine
-          }
+        licenseKey: 'non-commercial-and-evaluation', // Add the license key here
+        data: data, // Load the data passed
+        colHeaders: true, // Show column headers
+        rowHeaders: true, // Show row headers
+        filters: true, // Enable filters
+        dropdownMenu: true, // Enable dropdown menu
+        width: '100%',
+        height: 'auto',
+        stretchH: 'all',
+        formulas: {
+          engine: HyperFormula // Use HyperFormula engine
+        }
       });
-  }
+    }
 
-  // Function to handle text submission
-  function submitText() {
+    // Function to handle text submission
+    function submitText() {
       var text = document.getElementById('textInput').value;
 
       // If text is not empty, add it to Handsontable's first cell
       if (text.trim()) {
-          // Update the data in the first cell
-          var newData = hot.getData();
-          newData[0][0] = text;
+        // Update the data in the first cell
+        var newData = hot.getData();
+        newData[0][0] = text;
 
-          // Re-initialize Handsontable with updated data
-          initializeHandsontable(newData);
+        // Re-initialize Handsontable with updated data
+        initializeHandsontable(newData);
       }
-  }
+    }
 
-  // Initialize Handsontable on page load
-  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Handsontable on page load
+    document.addEventListener('DOMContentLoaded', function () {
       // Initial data with an example formula in cell D2
       initializeHandsontable([
-          ['', 'Ford', 'Volvo', 'Toyota', 'Honda'],
-          ['2016', 10, 11, 12, 13],
-          ['2017', 20, 11, 14, 13],
-          ['2018', 30, 15, 12, '=SUM(B2:B4)'], // Example formula in cell D2
+        ['', 'Ford', 'Volvo', 'Toyota', 'Honda'],
+        ['2016', 10, 11, 12, 13],
+        ['2017', 20, 11, 14, 13],
+        ['2018', 30, 15, 12, '=SUM(B2:B4)'], // Example formula in cell D2
       ]);
-  });
-</script>
+    });
 
+    // Call Handsontable initialization from Dart using Dart-JS interop
+    function initializeFromDart(data) {
+      initializeHandsontable(data);
+    }
+</script>
 </body>
 </html>
