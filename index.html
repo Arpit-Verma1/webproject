@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handsontable with Formula Support</title>
+  <!-- Handsontable CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+  <style>
+    /* Additional styling to ensure text visibility */
+    #spreadsheet .htCore td {
+        color: black; /* Set text color */
+        background-color: white; /* Set background color */
+    }
+
+    /* Optional styling */
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+
+    #spreadsheet {
+        margin-top: 20px;
+        border: 1px solid #ccc;
+    }
+
+    #textInput {
+        margin-bottom: 10px;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Handsontable Text and Formula Example</h1>
+
+<input type="text" id="textInput" placeholder="Enter text" />
+<button onclick="submitText()">Submit Text</button>
+
+<div id="spreadsheet"></div>
+
+<!-- HyperFormula Library (for formulas support) -->
+<script src="https://cdn.jsdelivr.net/npm/hyperformula@1.0.0/dist/hyperformula.full.min.js"></script>
+
+<!-- Handsontable JS -->
+<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+
+<script>
+  // Global Handsontable instance
+  var hot;
+
+  // Function to initialize Handsontable
+  function initializeHandsontable(data = [['', '', '', '', '']]) {
+      var container = document.getElementById('spreadsheet');
+
+      // If Handsontable already exists, destroy the old instance
+      if (hot) {
+          hot.destroy();
+      }
+
+      // Initialize Handsontable with HyperFormula engine for formula support
+      hot = new Handsontable(container, {
+          licenseKey: 'non-commercial-and-evaluation', // Add the license key here
+          data: data, // Load the data passed
+          colHeaders: true, // Show column headers
+          rowHeaders: true, // Show row headers
+          filters: true, // Enable filters
+          dropdownMenu: true, // Enable dropdown menu
+          width: '100%',
+          height: 'auto',
+          stretchH: 'all',
+          formulas: {
+              engine: HyperFormula // Use HyperFormula engine
+          }
+      });
+  }
+
+  // Function to handle text submission
+  function submitText() {
+      var text = document.getElementById('textInput').value;
+
+      // If text is not empty, add it to Handsontable's first cell
+      if (text.trim()) {
+          // Update the data in the first cell
+          var newData = hot.getData();
+          newData[0][0] = text;
+
+          // Re-initialize Handsontable with updated data
+          initializeHandsontable(newData);
+      }
+  }
+
+  // Initialize Handsontable on page load
+  document.addEventListener('DOMContentLoaded', function () {
+      // Initial data with an example formula in cell D2
+      initializeHandsontable([
+          ['', 'Ford', 'Volvo', 'Toyota', 'Honda'],
+          ['2016', 10, 11, 12, 13],
+          ['2017', 20, 11, 14, 13],
+          ['2018', 30, 15, 12, '=SUM(B2:B4)'], // Example formula in cell D2
+      ]);
+  });
+</script>
+
+</body>
+</html>
